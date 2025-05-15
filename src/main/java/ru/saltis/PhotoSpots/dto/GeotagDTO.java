@@ -8,6 +8,8 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import java.time.LocalDateTime;
+
 public class GeotagDTO {
 
     private int id;
@@ -24,7 +26,19 @@ public class GeotagDTO {
     @NotNull(message = "longitude should not be empty")
     private double longitude;
 
+    private LocalDateTime createdAt;
+
+    private PersonDTO owner;
+
     public GeotagDTO() {
+    }
+
+    public PersonDTO getOwner() {
+        return owner;
+    }
+
+    public void setOwner(PersonDTO owner) {
+        this.owner = owner;
     }
 
     public int getId() {
@@ -33,6 +47,14 @@ public class GeotagDTO {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     public String getTitle() {

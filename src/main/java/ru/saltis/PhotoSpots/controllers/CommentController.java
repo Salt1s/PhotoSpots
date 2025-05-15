@@ -11,6 +11,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import ru.saltis.PhotoSpots.dto.CommentDTO;
 import ru.saltis.PhotoSpots.dto.GeotagDTO;
+import ru.saltis.PhotoSpots.dto.PersonDTO;
 import ru.saltis.PhotoSpots.models.Comment;
 import ru.saltis.PhotoSpots.models.Geotag;
 import ru.saltis.PhotoSpots.models.Photo;
@@ -26,7 +27,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/photos/{PhotoId}/comments")
+@RequestMapping("/api/photos/{photoId}/comments")
 public class CommentController {
     private final CommentService commentService;
     private final ModelMapper modelMapper;
@@ -39,8 +40,24 @@ public class CommentController {
     }
 
     @GetMapping()
-    public List<CommentDTO> getCommentPhoto(@PathVariable("PhotoId") int id) {
-        return commentService.findAllByPhotoId(id).stream().map(this::converToCommentDTO).collect(Collectors.toList());
+    public List<CommentDTO> getCommentPhoto(@PathVariable("photoId") int id) {  // Исправить имя параметра
+        return commentService.findAllByPhotoId(id).stream()
+                .map(comment -> {
+                    CommentDTO dto = new CommentDTO();
+                    dto.setId(comment.getId());                    // Добавить ID
+                    dto.setText(comment.getText());
+                    dto.setCreatedAt(comment.getCreatedAt());
+
+                    if (comment.getOwner() != null) {             // Добавить информацию о пользователе
+                        PersonDTO ownerDTO = new PersonDTO();
+                        ownerDTO.setId(comment.getOwner().getId());
+                        ownerDTO.setUsername(comment.getOwner().getUsername());
+                        dto.setOwner(ownerDTO);
+                    }
+
+                    return dto;
+                })
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
@@ -49,7 +66,7 @@ public class CommentController {
     }
 
     @PostMapping()
-    public ResponseEntity<Comment> create(@PathVariable("PhotoId") int phId,
+    public ResponseEntity<Comment> create(@PathVariable("photoId") int phId,
                                          @RequestBody @Valid CommentDTO commentDTO,
                                          BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {

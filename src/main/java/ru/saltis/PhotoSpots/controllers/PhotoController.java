@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.saltis.PhotoSpots.dto.GeotagDTO;
 import ru.saltis.PhotoSpots.dto.PhotoDTO;
+import ru.saltis.PhotoSpots.dto.PhotoDataDTO;
 import ru.saltis.PhotoSpots.models.Geotag;
 import ru.saltis.PhotoSpots.models.Person;
 import ru.saltis.PhotoSpots.models.Photo;
@@ -29,6 +30,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -49,10 +51,31 @@ public class PhotoController {
         this.peopleService = peopleService;
     }
 
-//    @GetMapping()
-//    public List<PhotoDTO> getPhotos() {
-//        return photoService.findAll().stream().map(this::convertToPhotoDTO).collect(Collectors.toList()); //здесь автоматически Jackson конвертирует обьекты в JSON
-//    }
+    // Добавьте этот метод в класс PhotoController
+    @GetMapping("/data/{fileName}")
+    public ResponseEntity<?> getPhotoData(@PathVariable String fileName) {
+        try {
+            // Путь к файлу
+            Path filePath = Paths.get("src/main/resources/static/uploads/photos").resolve(fileName);
+
+            // Проверяем существование файла
+            if (!Files.exists(filePath)) {
+                return ResponseEntity.notFound().build();
+            }
+
+            // Читаем файл и конвертируем в Base64
+            byte[] fileContent = Files.readAllBytes(filePath);
+            String base64Data = Base64.getEncoder().encodeToString(fileContent);
+
+            // Возвращаем данные
+            return ResponseEntity.ok(new PhotoDataDTO(base64Data));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Ошибка при чтении файла");
+        }
+    }
 
     @GetMapping("/profile/{id}")
     public List<PhotoDTO> getPhotosPerson(@PathVariable("id") int id) {
@@ -61,15 +84,16 @@ public class PhotoController {
 
     @GetMapping("{geotagId}/all")
     public ResponseEntity<?> getPhotosByGeotag(@PathVariable int geotagId) {
-
-        List<Photo> photos = photoService.findAllByGeotagId(geotagId); // or findByGeotagId(geotagId)
+        List<Photo> photos = photoService.findAllByGeotagId(geotagId);
 
         List<PhotoDTO> photoDTOs = photos.stream()
                 .map(photo -> {
                     PhotoDTO dto = new PhotoDTO();
+                    dto.setId(photo.getId());
                     dto.setUrl(photo.getUrl());
                     dto.setDescription(photo.getDescription());
-                    dto.setUploadedAt(photo.getUploadedAt()); // assuming createdAt is the upload date
+                    dto.setUploadedAt(photo.getUploadedAt());
+                    dto.setOwner(peopleService.converToPersonDTO(photo.getOwner())); // Добавляем информацию о владельце
                     return dto;
                 })
                 .collect(Collectors.toList());
