@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 
 public class ReviewDTO {
 
+    private int id;
     @Size(max = 200, message = "text max 200 symbols")
     private String text;
 
@@ -18,6 +19,14 @@ public class ReviewDTO {
     private GeotagDTO geotag;
 
     public ReviewDTO() {
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getText() {

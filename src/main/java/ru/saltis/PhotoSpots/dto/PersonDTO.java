@@ -5,6 +5,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.validation.constraints.*;
 
+import java.time.LocalDate;
+
 public class PersonDTO {
 
     @NotNull
@@ -31,12 +33,42 @@ public class PersonDTO {
     @Size(min = 1, max = 100, message = "Password 1-100 symbols")
     private String password;
 
+    private String role;
+
+    private LocalDate createdAt;
+
+    private Boolean isBlocked;
+
     public int getId() {
         return id;
     }
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public LocalDate getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDate createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Boolean getBlocked() {
+        return isBlocked;
+    }
+
+    public void setBlocked(Boolean blocked) {
+        isBlocked = blocked;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public String getName() {

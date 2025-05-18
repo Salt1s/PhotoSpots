@@ -7,13 +7,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import ru.saltis.PhotoSpots.dto.AuthentificationDTO;
 import ru.saltis.PhotoSpots.dto.PersonDTO;
 import ru.saltis.PhotoSpots.models.Person;
+import ru.saltis.PhotoSpots.repositories.PeopleRepository;
 import ru.saltis.PhotoSpots.security.JWTUtil;
+import ru.saltis.PhotoSpots.services.PeopleService;
 import ru.saltis.PhotoSpots.services.RegistrationService;
 import ru.saltis.PhotoSpots.util.PersonValidator;
 
@@ -29,13 +32,15 @@ public class AuthController {
     private final ModelMapper modelMapper;
     private final JWTUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
+    private final PeopleService peopleService;
 
-    public AuthController(RegistrationService registrationService, PersonValidator personValidator, ModelMapper modelMapper, JWTUtil jwtUtil, AuthenticationManager authenticationManager) {
+    public AuthController(RegistrationService registrationService, PersonValidator personValidator, ModelMapper modelMapper, JWTUtil jwtUtil, AuthenticationManager authenticationManager, PeopleService peopleService) {
         this.registrationService = registrationService;
         this.personValidator = personValidator;
         this.modelMapper = modelMapper;
         this.jwtUtil = jwtUtil;
         this.authenticationManager = authenticationManager;
+        this.peopleService = peopleService;
     }
 
     @GetMapping("/ping")
@@ -50,7 +55,6 @@ public class AuthController {
 
         personValidator.validate(person, bindingResult);
 
-        //if(bindingResult.hasErrors()) return Map.of("message", "Ошибка в AUTH контроллере перформ"); //здесь по хорошему надо ловить ошибку через EXcHandler и выкидывать JSON
         if (bindingResult.hasErrors()) {
             bindingResult.getFieldErrors().forEach(error -> {
                 System.out.println(error.getField() + ": " + error.getDefaultMessage());
@@ -72,6 +76,11 @@ public class AuthController {
             authenticationManager.authenticate(authInputToken);
         } catch (BadCredentialsException e){
             return Map.of("message", "Incorrect username or password! (credentials)");
+        }
+        Person person = new Person();
+        person = peopleService.findByUsername(authentificationDTO.getUsername());
+        if (person.getBlocked()==true){
+            return Map.of("message", "You are blocked!");
         }
 
         String token = jwtUtil.generateToken(authentificationDTO.getUsername());

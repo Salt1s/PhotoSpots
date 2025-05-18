@@ -11,6 +11,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import ru.saltis.PhotoSpots.dto.PersonDTO;
 import ru.saltis.PhotoSpots.models.Person;
+import ru.saltis.PhotoSpots.services.AdminService;
 import ru.saltis.PhotoSpots.services.PeopleService;
 import ru.saltis.PhotoSpots.util.PersonErrorResponse;
 import ru.saltis.PhotoSpots.util.PersonNotCreatedException;
@@ -25,11 +26,13 @@ import java.util.stream.Collectors;
 public class PeopleController {
     private final PeopleService peopleService;
     private final ModelMapper modelMapper;
+    private final AdminService adminService;
 
 
-    public PeopleController(PeopleService peopleService, ModelMapper modelMapper) {
+    public PeopleController(PeopleService peopleService, ModelMapper modelMapper, AdminService adminService) {
         this.peopleService = peopleService;
         this.modelMapper = modelMapper;
+        this.adminService = adminService;
     }
 
     @GetMapping()
@@ -43,6 +46,29 @@ public class PeopleController {
         String username = auth.getName();
         Person person = peopleService.findByUsername(username);
         return converToPersonDTO(person);
+    }
+
+    //для АДМИНА
+    @PatchMapping("/{userId}/block")
+    public ResponseEntity<Person> blockProfile(@Valid @PathVariable("userId") int id) {
+        Person person = peopleService.findOne(id);
+        if (person == null) {
+            throw new PersonNotFoundException();
+        }
+        person.setBlocked(true);
+        adminService.saveBlocked(person);
+        return ResponseEntity.ok(person);
+    }
+
+    @PatchMapping("/{userId}/unblock")
+    public ResponseEntity<Person> unBlockProfile(@Valid @PathVariable("userId") int id) {
+        Person person = peopleService.findOne(id);
+        if (person == null) {
+            throw new PersonNotFoundException();
+        }
+        person.setBlocked(false);
+        adminService.saveBlocked(person);
+        return ResponseEntity.ok(person);
     }
 
     @GetMapping("/{username}")
@@ -100,9 +126,10 @@ public class PeopleController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    //для АДМИНА
     @DeleteMapping("/people/{id}")
     public ResponseEntity<Void> delete(@PathVariable int id) {
-        peopleService.delete(id);
+        adminService.delete(id);
         return ResponseEntity.noContent().build();
     }
 

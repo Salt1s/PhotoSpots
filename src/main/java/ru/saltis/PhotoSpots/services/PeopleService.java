@@ -35,6 +35,7 @@ public class PeopleService {
     public Person findByUsername(String username) {
         return peopleRepository.findByUsername(username).orElseThrow(PersonNotFoundException::new);
     }
+
     public Person findOne(int id) {
         Optional<Person> foundPerson =  peopleRepository.findById(id);
         return foundPerson.orElseThrow(PersonNotFoundException::new);

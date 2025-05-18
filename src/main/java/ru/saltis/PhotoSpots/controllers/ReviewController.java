@@ -8,6 +8,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import ru.saltis.PhotoSpots.dto.CommentDTO;
+import ru.saltis.PhotoSpots.dto.PersonDTO;
 import ru.saltis.PhotoSpots.dto.ReviewDTO;
 import ru.saltis.PhotoSpots.models.Comment;
 import ru.saltis.PhotoSpots.models.Geotag;
@@ -25,7 +26,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/map/{geotagId}/reviews")
+@RequestMapping("/api/map/")
 public class ReviewController {
     private final ReviewService reviewService;
     private final ModelMapper modelMapper;
@@ -37,18 +38,42 @@ public class ReviewController {
         this.geotagService = geotagService;
     }
 
+    @GetMapping("/reviews/{personId}")
+    public List<ReviewDTO> getReviewByPersonId(@PathVariable("personId") int id) {
+        return reviewService.findAllByPersonId(id)
+        .stream()
+                .map(review -> {
+                    ReviewDTO dto = new ReviewDTO();
+                    dto.setId(review.getId());                    // Добавить ID
+                    dto.setText(review.getText());
+                    dto.setCreatedAt(review.getCreatedAt());
+                    dto.setMark(review.getMark());
 
-    @GetMapping()
+                    if (review.getOwner() != null) {             // Добавить информацию о пользователе
+                        PersonDTO ownerDTO = new PersonDTO();
+                        ownerDTO.setId(review.getOwner().getId());
+                        ownerDTO.setUsername(review.getOwner().getUsername());
+                        dto.setOwner(ownerDTO);
+                    }
+
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
+
+
+    @GetMapping("/{geotagId}/reviews")
     public List<ReviewDTO> getReviewGeotag(@PathVariable("geotagId") int id) {
         return reviewService.findAllByGeotagId(id).stream().map(this::converToReviewDTO).collect(Collectors.toList());
     }
 
-    @GetMapping("/{id}")
+
+    @GetMapping("/{geotagId}/reviews/{id}")
     public ReviewDTO getReview(@PathVariable("id") int id) {
         return converToReviewDTO(reviewService.findOne(id));
     }
 
-    @PostMapping()
+    @PostMapping("/{geotagId}/reviews")
     public ResponseEntity<Review> create(@PathVariable("geotagId") int geoId,
                                          @RequestBody @Valid ReviewDTO reviewDTO,
                                          BindingResult bindingResult) {
@@ -69,7 +94,7 @@ public class ReviewController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/{geotagId}/reviews/{id}")
     public ResponseEntity<?> update(@PathVariable int id,
                                     @RequestBody @Valid ReviewDTO reviewDTO,
                                     BindingResult bindingResult) {
@@ -95,7 +120,7 @@ public class ReviewController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{geotagId}/reviews/{id}")
     public ResponseEntity<Void> delete(@PathVariable int id) {
         Review review = reviewService.findOne(id);
         reviewService.delete(id);

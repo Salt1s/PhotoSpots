@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/photos/{photoId}/comments")
+@RequestMapping("/api/photos")
 public class CommentController {
     private final CommentService commentService;
     private final ModelMapper modelMapper;
@@ -39,7 +39,28 @@ public class CommentController {
         this.photoService = photoService;
     }
 
-    @GetMapping()
+    @GetMapping("/comments/{personId}")
+    public List<CommentDTO> getCommentPerson(@PathVariable("personId") int id) {  // Исправить имя параметра
+        return commentService.findAllByPersonId(id).stream()
+                .map(comment -> {
+                    CommentDTO dto = new CommentDTO();
+                    dto.setId(comment.getId());                    // Добавить ID
+                    dto.setText(comment.getText());
+                    dto.setCreatedAt(comment.getCreatedAt());
+
+                    if (comment.getOwner() != null) {             // Добавить информацию о пользователе
+                        PersonDTO ownerDTO = new PersonDTO();
+                        ownerDTO.setId(comment.getOwner().getId());
+                        ownerDTO.setUsername(comment.getOwner().getUsername());
+                        dto.setOwner(ownerDTO);
+                    }
+
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping("/{photoId}/comments")
     public List<CommentDTO> getCommentPhoto(@PathVariable("photoId") int id) {  // Исправить имя параметра
         return commentService.findAllByPhotoId(id).stream()
                 .map(comment -> {
@@ -60,12 +81,12 @@ public class CommentController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{photoId}/comments/{id}")
     public CommentDTO getComment(@PathVariable("id") int id) {
         return converToCommentDTO(commentService.findOne(id));
     }
 
-    @PostMapping()
+    @PostMapping("/{photoId}/comments")
     public ResponseEntity<Comment> create(@PathVariable("photoId") int phId,
                                          @RequestBody @Valid CommentDTO commentDTO,
                                          BindingResult bindingResult) {
@@ -85,7 +106,7 @@ public class CommentController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/{photoId}/comments/{id}")
     public ResponseEntity<?> update(@PathVariable int id,
                                     @RequestBody @Valid CommentDTO commentDTO,
                                     BindingResult bindingResult) {
@@ -110,7 +131,7 @@ public class CommentController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{photoId}/comments/{id}")
     public ResponseEntity<Void> delete(@PathVariable int id) {
         commentService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);

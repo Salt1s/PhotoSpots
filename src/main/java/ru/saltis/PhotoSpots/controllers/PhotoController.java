@@ -78,8 +78,22 @@ public class PhotoController {
     }
 
     @GetMapping("/profile/{id}")
-    public List<PhotoDTO> getPhotosPerson(@PathVariable("id") int id) {
-        return photoService.findAllByPersonId(id).stream().map(this::convertToPhotoDTO).collect(Collectors.toList());
+    public ResponseEntity<?> getPhotosPerson(@PathVariable("id") int id) {
+        List<Photo> photos = photoService.findAllByPersonId(id);
+
+        List<PhotoDTO> photoDTOs = photos.stream()
+                .map(photo -> {
+                    PhotoDTO dto = new PhotoDTO();
+                    dto.setId(photo.getId());
+                    dto.setUrl(photo.getUrl());
+                    dto.setDescription(photo.getDescription());
+                    dto.setUploadedAt(photo.getUploadedAt());
+                    dto.setOwner(peopleService.converToPersonDTO(photo.getOwner())); // Добавляем информацию о владельце
+                    return dto;
+                })
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(photoDTOs);
     }
 
     @GetMapping("{geotagId}/all")
@@ -206,23 +220,10 @@ public ResponseEntity<?> updatePhoto(@PathVariable("geotagId") int geotagId,
 
 // 🗑️ Удаление фото
 @DeleteMapping("/{photoId}")
-public ResponseEntity<?> deletePhoto(@PathVariable("photoId") int photoId,
-                                     HttpExchange.Principal principal) {
+public ResponseEntity<?> deletePhoto(@PathVariable("photoId") int photoId) {
     Photo photo = photoService.findById(photoId);
     if (photo == null) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Фото не найдено");
-    }
-
-    // Получаем текущего пользователя
-    String username = principal.getName();
-    Person currentUser = peopleService.findByUsername(username);
-    if (currentUser == null) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Пользователь не найден");
-    }
-
-    // Проверка владельца
-    if (photo.getOwner().getId() != currentUser.getId()) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Вы не владелец этого фото");
     }
 
     // Удаление файла с диска

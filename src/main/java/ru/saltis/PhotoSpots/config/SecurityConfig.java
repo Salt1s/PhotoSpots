@@ -51,7 +51,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of("http://localhost:3000"));
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")); // Добавил PATCH
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setExposedHeaders(List.of("Authorization")); // Важно для JWT
         config.setAllowCredentials(true);
@@ -79,10 +79,10 @@ public class SecurityConfig {
                         })
                 )
                 .authorizeHttpRequests(auth -> auth
-                        //.requestMatchers("/admin").hasRole("ADMIN") //только для админа страница
+                        .requestMatchers("/admin").hasRole("ADMIN") //только для админа страница
 
                         .requestMatchers("/auth/login", "/auth/registration", "/error").permitAll() // разрешаем доступ к этим страницам
-                        .requestMatchers("/api/**").permitAll() // ПОКА ТАК
+                        .requestMatchers("/**").permitAll() // ПОКА ТАК
                         .anyRequest().hasAnyRole("USER", "ADMIN") // все остальные запросы требуют аутентификации под юзером или админом
                 )
                 .formLogin(form -> form
