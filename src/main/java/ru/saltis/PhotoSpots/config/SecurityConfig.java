@@ -50,7 +50,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:3000"));
+        config.setAllowedOrigins(List.of("http://localhost:3000", "https://localhost:3000", "https://photospots.ru", "http://0.0.0.0:3000", "http://158.160.183.86:3000"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setExposedHeaders(List.of("Authorization")); // Важно для JWT
@@ -80,8 +80,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/admin").hasRole("ADMIN") //только для админа страница
-
-                        .requestMatchers("/auth/login", "/auth/registration", "/error").permitAll() // разрешаем доступ к этим страницам
+                        .requestMatchers("/auth/login", "/auth/registration", "/error", "/map/**").permitAll() // разрешаем доступ к этим страницам
                         .requestMatchers("/**").permitAll() // ПОКА ТАК
                         .anyRequest().hasAnyRole("USER", "ADMIN") // все остальные запросы требуют аутентификации под юзером или админом
                 )

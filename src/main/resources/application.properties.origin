@@ -11,6 +11,7 @@ spring.datasource.url=
 spring.datasource.username=
 spring.datasource.password=
 
+
 jwt_secret=
 spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
 spring.jpa.properties.hibernate.show-sql=

@@ -65,11 +65,11 @@ public class CommentController {
         return commentService.findAllByPhotoId(id).stream()
                 .map(comment -> {
                     CommentDTO dto = new CommentDTO();
-                    dto.setId(comment.getId());                    // Добавить ID
+                    dto.setId(comment.getId());
                     dto.setText(comment.getText());
                     dto.setCreatedAt(comment.getCreatedAt());
 
-                    if (comment.getOwner() != null) {             // Добавить информацию о пользователе
+                    if (comment.getOwner() != null) {
                         PersonDTO ownerDTO = new PersonDTO();
                         ownerDTO.setId(comment.getOwner().getId());
                         ownerDTO.setUsername(comment.getOwner().getUsername());
@@ -114,12 +114,10 @@ public class CommentController {
         if (bindingResult.hasErrors()) {
             StringBuilder errorMSG = new StringBuilder();
             List<FieldError> errors = bindingResult.getFieldErrors();
-            // Собираем ошибки и возвращаем их
             for (FieldError error : errors) {
                 errorMSG.append(error.getField()).append(" - ").append(error.getDefaultMessage()).append("; ").append("\n");
             }
-            // Возвращаем ошибки с кодом 400 Bad Request
-            return ResponseEntity.badRequest().body(errorMSG.toString());
+            return ResponseEntity.badRequest().body(errorMSG.toString()); //400
         }
         Comment commentOld = commentService.findOne(id);
         // Преобразуем DTO в сущность
@@ -136,6 +134,11 @@ public class CommentController {
         commentService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+    @DeleteMapping("/comments/{id}")
+    public ResponseEntity<Void> deleteId(@PathVariable int id) {
+        commentService.delete(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
 
     @ExceptionHandler(CommentNotFoundException.class)
@@ -145,14 +148,6 @@ public class CommentController {
         );
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND); //404
     }
-//
-//    @ExceptionHandler(PersonNotCreatedException.class)
-//    private ResponseEntity<PersonErrorResponse> handleException(PersonNotCreatedException exception) {
-//        PersonErrorResponse response = new PersonErrorResponse(
-//                exception.getMessage(), System.currentTimeMillis()
-//        );
-//        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST); //400
-//    }
 
     private Comment converToComment(CommentDTO commentDTO) {
         return modelMapper.map(commentDTO, Comment.class);
