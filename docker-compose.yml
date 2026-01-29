@@ -1,0 +1,34 @@
+version: "3.8"
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    restart: always
+
+  backend:
+    build: ./backend
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/photo_spots_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=Saltisdb
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    restart: always
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: photo_spots_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Saltisdb
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
+
+volumes:
+  postgres_data:
