@@ -39,7 +39,7 @@ public class CommentService {
     }
 
     public Comment findOne(int id) {
-        Optional<Comment> foundComment =  commentRepository.findById(id);
+        Optional<Comment> foundComment = commentRepository.findById(id);
         return foundComment.orElseThrow(() -> new CommentNotFoundException("Comment not found"));
     }
 

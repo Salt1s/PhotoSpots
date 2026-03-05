@@ -74,7 +74,7 @@ public class PeopleController {
     @GetMapping("/{username}")
     public PersonDTO getPersonByUsername(@PathVariable("username") String username) {
         return converToPersonDTO(peopleService.findByUsername(username));
-           }
+    }
 
     @GetMapping("/id/{id}")
     public PersonDTO getPerson(@PathVariable("id") int id) {

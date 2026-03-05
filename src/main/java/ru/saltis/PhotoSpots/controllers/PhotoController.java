@@ -138,7 +138,6 @@ public class PhotoController {
     }
 
 
-
     @PostMapping(path = "/{geotagId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> addPhoto(@PathVariable("geotagId") int geotagId,
                                       @RequestParam("files") List<MultipartFile> files) {
@@ -194,51 +193,51 @@ public class PhotoController {
         }
     }
 
-// ✏️ Редактирование фото
-@PatchMapping("/{photoId}")
-public ResponseEntity<?> updatePhoto(@PathVariable("geotagId") int geotagId,
-                                     @PathVariable("photoId") int photoId,
-                                     @RequestBody @Valid PhotoDTO photoDTO,
-                                     BindingResult bindingResult) {
-    if (bindingResult.hasErrors()) {
-        String errorMsg = bindingResult.getFieldErrors().stream()
-                .map(err -> err.getField() + " - " + err.getDefaultMessage())
-                .collect(Collectors.joining("; "));
-        return ResponseEntity.badRequest().body(errorMsg);
+    // ✏️ Редактирование фото
+    @PatchMapping("/{photoId}")
+    public ResponseEntity<?> updatePhoto(@PathVariable("geotagId") int geotagId,
+                                         @PathVariable("photoId") int photoId,
+                                         @RequestBody @Valid PhotoDTO photoDTO,
+                                         BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            String errorMsg = bindingResult.getFieldErrors().stream()
+                    .map(err -> err.getField() + " - " + err.getDefaultMessage())
+                    .collect(Collectors.joining("; "));
+            return ResponseEntity.badRequest().body(errorMsg);
+        }
+
+        Photo existingPhoto = photoService.findById(photoId);
+        if (existingPhoto == null || existingPhoto.getGeotag().getId() != geotagId) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Photo not found for this Geotag");
+        }
+
+        existingPhoto.setUrl(photoDTO.getUrl());
+        existingPhoto.setDescription(photoDTO.getDescription());
+        photoService.save(existingPhoto);
+        return ResponseEntity.ok().build();
     }
 
-    Photo existingPhoto = photoService.findById(photoId);
-    if (existingPhoto == null || existingPhoto.getGeotag().getId() != geotagId) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Photo not found for this Geotag");
+    // 🗑️ Удаление фото
+    @DeleteMapping("/{photoId}")
+    public ResponseEntity<?> deletePhoto(@PathVariable("photoId") int photoId) {
+        Photo photo = photoService.findById(photoId);
+        if (photo == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Фото не найдено");
+        }
+
+        // Удаление файла с диска
+        try {
+            String fileName = Paths.get(photo.getUrl()).getFileName().toString();
+            Path filePath = Paths.get("uploads/photos", fileName);
+            Files.deleteIfExists(filePath);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка при удалении файла");
+        }
+
+        // Удаление записи из БД
+        photoService.delete(photoId);
+        return ResponseEntity.ok("Фото удалено");
     }
-
-    existingPhoto.setUrl(photoDTO.getUrl());
-    existingPhoto.setDescription(photoDTO.getDescription());
-    photoService.save(existingPhoto);
-    return ResponseEntity.ok().build();
-}
-
-// 🗑️ Удаление фото
-@DeleteMapping("/{photoId}")
-public ResponseEntity<?> deletePhoto(@PathVariable("photoId") int photoId) {
-    Photo photo = photoService.findById(photoId);
-    if (photo == null) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Фото не найдено");
-    }
-
-    // Удаление файла с диска
-    try {
-        String fileName = Paths.get(photo.getUrl()).getFileName().toString();
-        Path filePath = Paths.get("uploads/photos", fileName);
-        Files.deleteIfExists(filePath);
-    } catch (IOException e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка при удалении файла");
-    }
-
-    // Удаление записи из БД
-    photoService.delete(photoId);
-    return ResponseEntity.ok("Фото удалено");
-}
 
 
     @ExceptionHandler(PhotoNotFoundException.class)

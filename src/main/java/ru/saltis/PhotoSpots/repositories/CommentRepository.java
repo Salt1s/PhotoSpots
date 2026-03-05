@@ -10,5 +10,6 @@ import java.util.List;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Integer> {
     List<Comment> findAllByPhoto_Id(int id);
+
     List<Comment> findAllByOwner_Id(int id);
 }

@@ -59,6 +59,7 @@ public class PersonDetails implements UserDetails {
         return true;
         //return UserDetails.super.isEnabled();
     }
+
     //нуже для получения данных аутентифицированного пользователя
     public Person getPerson() {
         return this.person;

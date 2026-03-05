@@ -41,7 +41,7 @@ public class ReviewService {
     }
 
     public Review findOne(int id) {
-        Optional<Review> foundReview =  reviewRepository.findById(id);
+        Optional<Review> foundReview = reviewRepository.findById(id);
         return foundReview.orElseThrow(() -> new ReviewNotFoundException("Review not found"));
     }
 

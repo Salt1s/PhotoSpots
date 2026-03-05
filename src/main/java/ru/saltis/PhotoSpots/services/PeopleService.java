@@ -37,12 +37,12 @@ public class PeopleService {
     }
 
     public Person findOne(int id) {
-        Optional<Person> foundPerson =  peopleRepository.findById(id);
+        Optional<Person> foundPerson = peopleRepository.findById(id);
         return foundPerson.orElseThrow(PersonNotFoundException::new);
     }
 
     public Person findOne(String username) {
-        Optional<Person> foundPerson =  peopleRepository.findByUsername(username);
+        Optional<Person> foundPerson = peopleRepository.findByUsername(username);
         System.out.println(username + " " + foundPerson.isPresent());
         return foundPerson.orElseThrow(PersonNotFoundException::new);
     }
@@ -71,6 +71,7 @@ public class PeopleService {
         person.setRole("ROLE_USER");
         person.setIsBlocked(false);
     }
+
     public PersonDTO converToPersonDTO(Person person) {
         return modelMapper.map(person, PersonDTO.class);
     }

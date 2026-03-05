@@ -1,0 +1,7 @@
+<inspections profile="Checkstyle real-time scan"><group name="Checkstyle" path=""><inspection shortName="CheckStyle" defaultSeverity="WARNING" displayName="Checkstyle real-time scan" enabled="true" language="" pluginId="CheckStyle-IDEA" pluginVersion="26.4.0" isGlobalTool="false">&lt;html&gt;
+&lt;body&gt;
+    This inspection integrates CheckStyle and reports in real-time
+    on problems against the current CheckStyle profile.
+&lt;!-- tooltip end --&gt;&lt;p&gt;&lt;small&gt;Inspection ID: CheckStyle&lt;/small&gt;&lt;/p&gt;&lt;/body&gt;
+&lt;/html&gt;
+</inspection></group></inspections>

@@ -25,7 +25,8 @@ import java.util.List;
 
 @EnableWebSecurity
 @Configuration
-@EnableGlobalMethodSecurity(prePostEnabled = true) //включает AOP для конкретных методов или классов с помощью аннотаций @PreAuthorized, @PostAuthorize и т.п.
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+//включает AOP для конкретных методов или классов с помощью аннотаций @PreAuthorized, @PostAuthorize и т.п.
 public class SecurityConfig {
 
     private final PersonDetailsService personDetailsService;
@@ -67,7 +68,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .csrf( csrf -> csrf.disable())
+                .csrf(csrf -> csrf.disable())
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint((request, response, authException) -> {
                             if (request.getMethod().equals("GET")) {

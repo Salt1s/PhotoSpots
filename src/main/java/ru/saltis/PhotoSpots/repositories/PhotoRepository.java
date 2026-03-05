@@ -9,5 +9,6 @@ import java.util.List;
 @Repository
 public interface PhotoRepository extends JpaRepository<Photo, Integer> {
     List<Photo> findAllByOwner_Id(int id);
+
     List<Photo> findAllByGeotag_Id(int id);
 }

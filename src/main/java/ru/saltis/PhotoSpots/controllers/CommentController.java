@@ -88,8 +88,8 @@ public class CommentController {
 
     @PostMapping("/{photoId}/comments")
     public ResponseEntity<Comment> create(@PathVariable("photoId") int phId,
-                                         @RequestBody @Valid CommentDTO commentDTO,
-                                         BindingResult bindingResult) {
+                                          @RequestBody @Valid CommentDTO commentDTO,
+                                          BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             StringBuilder errorMSG = new StringBuilder();
             List<FieldError> errors = bindingResult.getFieldErrors();
@@ -134,6 +134,7 @@ public class CommentController {
         commentService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
     @DeleteMapping("/comments/{id}")
     public ResponseEntity<Void> deleteId(@PathVariable int id) {
         commentService.delete(id);

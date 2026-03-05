@@ -126,7 +126,6 @@ public class GeotagController {
     }
 
 
-
     @PatchMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable int id,
                                     @RequestBody @Valid GeotagDTO geotagDTO,

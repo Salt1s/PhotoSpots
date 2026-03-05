@@ -41,7 +41,7 @@ public class ReviewController {
     @GetMapping("/reviews/{personId}")
     public List<ReviewDTO> getReviewByPersonId(@PathVariable("personId") int id) {
         return reviewService.findAllByPersonId(id)
-        .stream()
+                .stream()
                 .map(review -> {
                     ReviewDTO dto = new ReviewDTO();
                     dto.setId(review.getId());                    // Добавить ID
@@ -136,7 +136,8 @@ public class ReviewController {
         );
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND); //404
     }
-//
+
+    //
 //    @ExceptionHandler(PersonNotCreatedException.class)
 //    private ResponseEntity<PersonErrorResponse> handleException(PersonNotCreatedException exception) {
 //        PersonErrorResponse response = new PersonErrorResponse(
@@ -149,12 +150,12 @@ public class ReviewController {
         float mark = 0;
         int counter = 0;
         for (Review review1 : reviews) {
-            if (review1.getMark()>0){
-                mark+=review1.getMark();
+            if (review1.getMark() > 0) {
+                mark += review1.getMark();
                 counter++;
             }
         }
-        geotag.setRating(mark/counter);
+        geotag.setRating(mark / counter);
         geotagService.update(geotagId, geotag);
     }
 

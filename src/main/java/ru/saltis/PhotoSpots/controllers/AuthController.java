@@ -50,7 +50,7 @@ public class AuthController {
 
     @PostMapping("/registration")
     public Map<String, String> performRegistration(@RequestBody @Valid PersonDTO personDTO,
-                                                   BindingResult bindingResult){
+                                                   BindingResult bindingResult) {
         Person person = convertToPerson(personDTO);
 
         personValidator.validate(person, bindingResult);
@@ -68,18 +68,18 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public Map<String, String> performLogin(@RequestBody AuthentificationDTO authentificationDTO){
+    public Map<String, String> performLogin(@RequestBody AuthentificationDTO authentificationDTO) {
         UsernamePasswordAuthenticationToken authInputToken =
                 new UsernamePasswordAuthenticationToken(authentificationDTO.getUsername(),
                         authentificationDTO.getPassword());
         try {
             authenticationManager.authenticate(authInputToken);
-        } catch (BadCredentialsException e){
+        } catch (BadCredentialsException e) {
             return Map.of("message", "Incorrect username or password! (credentials)");
         }
         Person person = new Person();
         person = peopleService.findByUsername(authentificationDTO.getUsername());
-        if (person.getBlocked()==true){
+        if (person.getBlocked() == true) {
             return Map.of("message", "You are blocked!");
         }
 
@@ -87,7 +87,7 @@ public class AuthController {
         return Map.of("jwt-token", token);
     }
 
-    public Person convertToPerson(PersonDTO personDTO){
+    public Person convertToPerson(PersonDTO personDTO) {
         return modelMapper.map(personDTO, Person.class);
     }
 

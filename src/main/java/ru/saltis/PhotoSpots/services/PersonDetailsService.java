@@ -11,7 +11,7 @@ import ru.saltis.PhotoSpots.security.PersonDetails;
 import java.util.Optional;
 
 @Service
-public class PersonDetailsService implements UserDetailsService{
+public class PersonDetailsService implements UserDetailsService {
 
     private final PeopleRepository peopleRepository;
 
@@ -21,8 +21,8 @@ public class PersonDetailsService implements UserDetailsService{
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<Person> person =  peopleRepository.findByUsername(username);
-        if(person.isEmpty()) throw new UsernameNotFoundException("User  " + username + " not found! \n");
+        Optional<Person> person = peopleRepository.findByUsername(username);
+        if (person.isEmpty()) throw new UsernameNotFoundException("User  " + username + " not found! \n");
         return new PersonDetails(person.get());
     }
 }

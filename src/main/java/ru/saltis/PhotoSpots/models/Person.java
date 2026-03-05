@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-@Table(name="person")
+@Table(name = "person")
 public class Person {
 
     @Id
@@ -148,6 +148,7 @@ public class Person {
     public Boolean getIsBlocked() {
         return isBlocked;
     }
+
     public void setIsBlocked(Boolean isBlocked) {
         this.isBlocked = isBlocked;
     }

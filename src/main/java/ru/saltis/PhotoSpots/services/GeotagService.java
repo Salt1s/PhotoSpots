@@ -36,7 +36,7 @@ public class GeotagService {
     }
 
     public Geotag findOne(int id) {
-        Optional<Geotag> foundGeotag =  geotagRepository.findById(id);
+        Optional<Geotag> foundGeotag = geotagRepository.findById(id);
         return foundGeotag.orElseThrow(() -> new GeotagNotFoundException("Geotag not found"));
     }
 
