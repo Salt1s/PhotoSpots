@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.saltis.PhotoSpots.dto.PersonDTO;
 import ru.saltis.PhotoSpots.models.Person;
-import ru.saltis.PhotoSpots.repositories.PeopleRepository;
 
 @Service
 public class RegistrationService {

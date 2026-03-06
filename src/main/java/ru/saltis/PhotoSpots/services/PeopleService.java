@@ -1,6 +1,7 @@
 package ru.saltis.PhotoSpots.services;
 
 import jakarta.validation.Valid;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -8,10 +9,8 @@ import ru.saltis.PhotoSpots.dto.PersonDTO;
 import ru.saltis.PhotoSpots.models.Person;
 import ru.saltis.PhotoSpots.repositories.PeopleRepository;
 import ru.saltis.PhotoSpots.util.PersonNotFoundException;
-import org.modelmapper.ModelMapper;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 

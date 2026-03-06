@@ -3,8 +3,6 @@ package ru.saltis.PhotoSpots.models;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
-import ru.saltis.PhotoSpots.dto.PersonDTO;
-import ru.saltis.PhotoSpots.dto.PhotoDTO;
 
 import java.time.LocalDateTime;
 

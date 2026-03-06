@@ -2,25 +2,19 @@ package ru.saltis.PhotoSpots.controllers;
 
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import ru.saltis.PhotoSpots.dto.AuthentificationDTO;
 import ru.saltis.PhotoSpots.dto.PersonDTO;
 import ru.saltis.PhotoSpots.models.Person;
-import ru.saltis.PhotoSpots.repositories.PeopleRepository;
 import ru.saltis.PhotoSpots.security.JWTUtil;
 import ru.saltis.PhotoSpots.services.PeopleService;
 import ru.saltis.PhotoSpots.services.RegistrationService;
 import ru.saltis.PhotoSpots.util.PersonValidator;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @RestController

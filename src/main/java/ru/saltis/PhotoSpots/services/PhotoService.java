@@ -1,17 +1,12 @@
 package ru.saltis.PhotoSpots.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.saltis.PhotoSpots.dto.PhotoDTO;
-import ru.saltis.PhotoSpots.models.Geotag;
 import ru.saltis.PhotoSpots.models.Person;
 import ru.saltis.PhotoSpots.models.Photo;
 import ru.saltis.PhotoSpots.repositories.PhotoRepository;
-import ru.saltis.PhotoSpots.util.GeotagNotFoundException;
 import ru.saltis.PhotoSpots.util.PhotoNotFoundException;
 
 import java.time.LocalDateTime;

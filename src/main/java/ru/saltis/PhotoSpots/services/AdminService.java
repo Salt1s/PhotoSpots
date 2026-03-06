@@ -16,7 +16,10 @@ public class AdminService {
     private final ReviewService reviewService;
 
     @Autowired
-    public AdminService(PeopleRepository peopleRepository, PhotoService photoService, CommentService commentService, ReviewService reviewService) {
+    public AdminService(PeopleRepository peopleRepository,
+                        PhotoService photoService,
+                        CommentService commentService,
+                        ReviewService reviewService) {
         this.peopleRepository = peopleRepository;
         this.photoService = photoService;
         this.commentService = commentService;

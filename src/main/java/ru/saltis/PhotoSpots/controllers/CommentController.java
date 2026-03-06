@@ -2,25 +2,18 @@ package ru.saltis.PhotoSpots.controllers;
 
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Repository;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import ru.saltis.PhotoSpots.dto.CommentDTO;
-import ru.saltis.PhotoSpots.dto.GeotagDTO;
 import ru.saltis.PhotoSpots.dto.PersonDTO;
 import ru.saltis.PhotoSpots.models.Comment;
-import ru.saltis.PhotoSpots.models.Geotag;
 import ru.saltis.PhotoSpots.models.Photo;
 import ru.saltis.PhotoSpots.services.CommentService;
-import ru.saltis.PhotoSpots.services.GeotagService;
-import ru.saltis.PhotoSpots.services.PeopleService;
 import ru.saltis.PhotoSpots.services.PhotoService;
 import ru.saltis.PhotoSpots.util.CommentNotFoundException;
-import ru.saltis.PhotoSpots.util.GeotagNotFoundException;
 import ru.saltis.PhotoSpots.util.PersonErrorResponse;
 
 import java.util.List;

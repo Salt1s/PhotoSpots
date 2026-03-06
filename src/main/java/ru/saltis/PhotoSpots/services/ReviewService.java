@@ -4,12 +4,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.saltis.PhotoSpots.models.Comment;
 import ru.saltis.PhotoSpots.models.Person;
 import ru.saltis.PhotoSpots.models.Review;
-import ru.saltis.PhotoSpots.repositories.CommentRepository;
 import ru.saltis.PhotoSpots.repositories.ReviewRepository;
-import ru.saltis.PhotoSpots.util.CommentNotFoundException;
 import ru.saltis.PhotoSpots.util.ReviewNotFoundException;
 
 import java.time.LocalDateTime;

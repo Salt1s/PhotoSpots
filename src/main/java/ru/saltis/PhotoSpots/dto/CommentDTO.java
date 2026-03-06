@@ -1,11 +1,6 @@
 package ru.saltis.PhotoSpots.dto;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.Size;
-import ru.saltis.PhotoSpots.models.Person;
-import ru.saltis.PhotoSpots.models.Photo;
 
 import java.time.LocalDateTime;
 
@@ -29,16 +24,16 @@ public class CommentDTO {
         return text;
     }
 
+    public void setText(String text) {
+        this.text = text;
+    }
+
     public int getId() {
         return id;
     }
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public void setText(String text) {
-        this.text = text;
     }
 
     public LocalDateTime getCreatedAt() {

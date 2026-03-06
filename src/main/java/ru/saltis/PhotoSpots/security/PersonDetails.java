@@ -8,13 +8,7 @@ import ru.saltis.PhotoSpots.models.Person;
 import java.util.Collection;
 import java.util.Collections;
 
-public class PersonDetails implements UserDetails {
-
-    private final Person person;
-
-    public PersonDetails(Person person) {
-        this.person = person;
-    }
+public record PersonDetails(Person person) implements UserDetails {
 
     //коллекция прав которые есть у пользователя
     @Override
@@ -58,10 +52,5 @@ public class PersonDetails implements UserDetails {
     public boolean isEnabled() {
         return true;
         //return UserDetails.super.isEnabled();
-    }
-
-    //нуже для получения данных аутентифицированного пользователя
-    public Person getPerson() {
-        return this.person;
     }
 }
